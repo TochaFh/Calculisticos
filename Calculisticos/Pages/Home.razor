@@ -1,0 +1,61 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<p>Valor total da compra: </p>
+<input @bind="valorTotal"/>
+@if (!float.TryParse(valorTotal, out float _))
+{
+    <p>número inválido</p>
+}
+
+<p>__________________</p>
+<Individuais StateChanged="StateHasChanged" @ref="inEdson" IndName="Edson"></Individuais>
+
+<p>__________________</p>
+<Individuais StateChanged="StateHasChanged" @ref="inRafael" IndName="Rafael"></Individuais>
+
+<p>__________________</p>
+<Individuais StateChanged="StateHasChanged" @ref="inYan" IndName="Yan"></Individuais>
+
+<p>__________________</p>
+<h4>A pagar:</h4>
+<p>@Atualizar()</p>
+<p>Edson: @edson</p>
+<p>Rafael: @rafael</p>
+<p>Yan: @yan</p>
+
+@code {
+    string valorTotal;
+    float totalTotal;
+
+    float tercoComum, totalComum;
+    float edson, rafael, yan;
+
+    Individuais inEdson, inRafael, inYan;
+    float edson_ind, rafael_ind, yan_ind;
+
+    string Atualizar()
+    {
+        if (!float.TryParse(valorTotal, out totalTotal))
+        {
+            edson = -1;
+            rafael = -1;
+            yan = -1;
+            return "valor de compra total INVÁLIDO! :/";
+        }
+
+        edson_ind = inEdson.SomaIndiv();
+        rafael_ind = inRafael.SomaIndiv();
+        yan_ind = inYan.SomaIndiv();
+
+        totalComum = totalTotal - edson_ind - rafael_ind - yan_ind;
+        tercoComum = totalComum / 3;
+
+        edson = tercoComum + edson_ind;
+        rafael = tercoComum + rafael_ind;
+        yan = tercoComum + yan_ind;
+
+        return "";
+    }
+}

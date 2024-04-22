@@ -1,0 +1,68 @@
+﻿<h4>@IndName</h4>
+
+@for (int i = 0; i < this.valores.Count; i++)
+{
+    var iCopy = i;
+    <p></p>
+    <input @onchange="e => MudarValor(iCopy, e.Value.ToString())" />
+    <button @onclick="@(e => Remove(iCopy))"> - </button>
+
+    @if (!Conversivel(iCopy))
+    {
+        <p>número inválido</p>
+    }
+}
+
+<p></p>
+<button @onclick="@(e => Add())"> + </button>
+
+@code {
+    [Parameter] public string IndName { get; set; } = "default name";
+    [Parameter] public Action StateChanged { get; set; }
+
+    List<string> valores;
+
+    public Individuais()
+    {
+        valores = new List<string>();
+        valores.Add("0");
+    }
+
+    private bool Conversivel(int i)
+    {
+        return float.TryParse(valores[i], out float _);
+    }
+
+    private void MudarValor(int i, string valor)
+    {
+        valores[i] = valor;
+        StateChanged?.Invoke();
+    }
+
+    private void Add()
+    {
+        valores.Add("0");
+        StateChanged?.Invoke();
+    }
+
+    private void Remove(int i)
+    {
+        valores.RemoveAt(i);
+        StateChanged?.Invoke();
+    }
+
+    public float SomaIndiv()
+    {
+        float total = 0;
+        float v;
+        foreach (string num in valores)
+        {
+            if (float.TryParse(num, out v))
+            {
+                total += v;
+            }
+        }
+
+        return total;
+    }
+}
